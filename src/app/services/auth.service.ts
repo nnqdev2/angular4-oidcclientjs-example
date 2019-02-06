@@ -10,6 +10,10 @@ export class AuthService {
   private manager = new UserManager(getClientSettings());
   private user: User = null;
 
+  private isLustAdmin: boolean;
+  private isLustProjectManager: boolean;
+  private isOlprrReview: boolean;
+
   constructor() {
     this.manager.getUser().then(user => {
       this.user = user;
@@ -39,6 +43,7 @@ export class AuthService {
   getProfile(): any {
     return this.user ? this.user.profile : '';
   }
+
   getAuthorizationHeaderValue(): string {
     console.log('AuthService getAuthorizationHeaderValue()');
     console.log(`${this.user.token_type} ${this.user.access_token}`);
@@ -54,18 +59,38 @@ export class AuthService {
     console.log('################################AuthService completeAuthentication()  starts');
     return this.manager.signinRedirectCallback().then(user => {
       console.log('################################AuthService completeAuthentication()');
-      console.log('this.user before this.manager.signinRedirectCallback()');
+      console.log('###################this.user before this.manager.signinRedirectCallback()');
       console.log(this.user);
       this.user = user;
-      console.log('this.user returned from this.manager.signinRedirectCallback()');
+      console.log('###################this.user returned from this.manager.signinRedirectCallback()');
       console.log(this.user);
+      // console.log('###################this.user returned from this.manager.signinRedirectCallback() id and access token');
       // console.log(this.user.id_token);
       // console.log(this.user.access_token);
-      // console.log(this.user.profile);
-      console.log('#################################localStorage.getItem       HELLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
+      // console.log('###################this.user returned from this.manager.signinRedirectCallback() profile');
+      // console.log(this.user.profile.amr);
+      // console.log(this.user.profile.idp);
+      // console.log(this.user.profile.name);
+      console.log(this.user.profile.role);
+      const roleArray: string[] = this.user.profile.role;
+      console.log(roleArray);
+      console.log(this.user.profile.role.includes('DEQ\\LustAdmin'));
+      console.log(roleArray.includes('DEQ\\LustAdmin'));
+      console.log(this.user.profile.role.indexOf('DEQ\\LustAdmin'));
+      console.log(roleArray.indexOf('DEQ\\LustAdmin'));
+      console.log(this.user.profile.role[1]);
+      // console.log('#################################localStorage.getItem       HELLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
       // console.log(JSON.parse(localStorage.getItem('oidc.user:http://localhost:5555/:angular_spa')));
       // console.log(JSON.parse(localStorage.getItem('oidc.user:http://localhost:44317/:angular_spa')));
     });
+  }
+
+  isLustAdminRole(): boolean {
+    return this.isLustAdmin;
+  }
+
+  isLustProjectManagerRole(): boolean {
+    return this.isLustProjectManager;
   }
 }
 
